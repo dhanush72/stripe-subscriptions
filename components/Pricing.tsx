@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 import Link from 'next/link';
+import PaymentLink from './PaymentLink';
 
 enum PopularPlanType {
   NO = 0,
@@ -24,6 +25,7 @@ interface PricingProps {
   buttonText: string;
   benefitList: string[];
   href: string;
+  paymentLink?: string;
   billing: string;
 }
 
@@ -43,6 +45,7 @@ const pricingList: PricingProps[] = [
       'lorem ipsum dolor',
     ],
     href: '/api/auth/login',
+    paymentLink: '',
     billing: '/month',
   },
   {
@@ -60,6 +63,7 @@ const pricingList: PricingProps[] = [
       'lorem ipsum dolor',
     ],
     href: '/api/auth/login',
+    paymentLink: process.env.STRIPE_MONTHLY_PLAN_LINK,
     billing: '/month',
   },
   {
@@ -77,6 +81,7 @@ const pricingList: PricingProps[] = [
       'lorem ipsum dolor',
     ],
     href: '/api/auth/login',
+    paymentLink: process.env.STRIPE_YEARLY_PLAN_LINK,
     billing: '/year',
   },
 ];
@@ -127,9 +132,11 @@ export const Pricing = () => {
             </CardHeader>
 
             <CardContent>
-              <Link href={pricing.href} className={buttonVariants()}>
-                {pricing.buttonText}
-              </Link>
+              <PaymentLink
+                href={pricing.href}
+                paymentLink={pricing.paymentLink}
+                text={pricing.title}
+              />
             </CardContent>
 
             <hr className="w-4/5 m-auto mb-4" />

@@ -4,7 +4,7 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { useQuery } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { checkAuthStatus } from './actions';
 
 const Page = () => {
@@ -15,7 +15,17 @@ const Page = () => {
     queryFn: async () => await checkAuthStatus(),
   });
 
-  if (data?.success) router.push('/');
+  useEffect(() => {
+    const stripePaymentLink = localStorage.getItem('stripePaymentLink');
+    if (stripePaymentLink && user?.email) {
+      console.log('inside if');
+      localStorage.removeItem('stripePaymentLink');
+      router.push(stripePaymentLink + `?prefilled_email=${user.email}`);
+    } else if (!data?.success) {
+      router.push('/');
+    }
+  }, [router, data, user]);
+
   return (
     <div className="mt-20 w-full flex justify-center">
       <div className="flex flex-col items-center gap-2">
